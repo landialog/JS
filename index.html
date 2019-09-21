@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue"></script>
+    <title>Notes app</title>
+    <style>
+
+        body{
+            box-sizing: border-box;
+        }
+        .container {
+            width: 1024px;
+            margin: 0 auto;
+        }
+
+        .note {
+            border: 1px solid #484848;
+            margin-bottom: 5px;
+            padding: 0;
+        }
+
+        .normal {
+            background-color: #23cc32;
+        }
+
+        .warning{
+            background-color: yellow;
+        }
+
+        .danger{
+            background-color: #ff2b3e;
+            color: #ffffff;
+        }
+
+        .box{
+            width: 50px;
+            height: 50px;
+            border:1px solid #000000;
+        }
+
+    </style>
+</head>
+<body >
+
+<div id="app" class="container">
+    <h1>{{titlePage}}</h1>
+    <h2>Add note</h2>
+
+        <p><label for="title">Title</label>
+            <input type="text" v-model="note.title" id="title"><br>
+            <span v-if="message" class="error">{{message}}</span>
+        </p>
+        <p><label for="desc">Desc</label>
+            <textarea v-model="note.descr" id="desc" cols="25" rows="5"></textarea></p>
+
+        <!--selectt important-->
+        <label for="import">Select important</label>
+        <select id="import" v-model="note.importance">
+            <option value="normal">normal</option>
+            <option value="warning">warning</option>
+            <option value="danger">danger</option>
+        </select>
+
+
+        <p class="box" :class="note.importance">{{note.importance}}</p>
+
+    <button type="submit" @click="addNote">Add note</button>
+
+
+    <!--list notes-->
+    <div class="notes">
+        <div class="note" v-for="(note, i) in notes" :key="i" >
+            <div :class="note.importance">
+                <p>Heading: {{note.title}}</p>
+                <p>Description: {{note.descr}}</p>
+                <span>Date:{{note.date}}</span>
+                <p>{{note.importance}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+
+            titlePage: 'Hello Vue',
+            message: '',
+            note: {
+                title: '',
+                descr: '',
+                importance:'normal',
+            },
+            notes: [
+                {
+                    title: 'Thirst heading',
+                    descr: 'This is about thirst post',
+                    date: new Date(Date.now()).toLocaleString(),
+                    importance:'warning',
+                },
+                {
+                    title: 'Second heading',
+                    descr: 'Second is about Second post',
+                    date: new Date(Date.now()).toLocaleString(),
+                    importance:'danger',
+                },
+            ]
+        },
+        methods: {
+            addNote() {
+                let {title, descr, importance} = this.note;
+
+                if (title === '') {
+                    this.message = 'This can`t be blank';
+                    return false;
+                }
+
+                this.notes.push({
+                    title,
+                    descr,
+                    importance,
+                    date: new Date(Date.now()).toLocaleString()
+                });
+
+                this.message = null;
+                this.note.title = '';
+                this.note.descr = '';
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>
